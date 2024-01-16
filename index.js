@@ -30,6 +30,26 @@ app.get('/api/users/:ID', (request, response) => {
     response.status(200).send(user);
 });
 
+app.post('/api/users/', (request, response) => {
+    const { username, email } = request.body;
+
+     if (username === undefined) {
+        response.status(400).send('Missing username');
+        return;
+    } else if (email === undefined) {
+        response.status(400).send('Missing email');
+        return;
+    }
+
+    const ID = randomUUID();
+    usersMap.set(ID, { "username": username, "email": email });
+
+    const createdUser = usersMap.get(ID);
+    const result = [ ID, createdUser ];
+
+    response.status(201).send(result);
+});
+
 app.put('/api/users/:ID', (request, response) => {
     const ID = request.params.ID;
     const { username, email } = request.body;

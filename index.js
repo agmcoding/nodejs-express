@@ -71,7 +71,7 @@ app.put('/api/users/:ID', (request, response) => {
     return;
   }
 
-  usersMap.set(ID, request.body);
+  usersMap.set(ID, { username, email });
   response.status(204).end();
 });
 

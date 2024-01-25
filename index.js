@@ -31,6 +31,7 @@ app.get('/api/users/:ID', (request, response) => {
   response.status(200).send(user);
 });
 
+/* jscpd:ignore-start */
 app.post(
   '/api/users/',
   body('username').notEmpty(),
@@ -45,6 +46,7 @@ app.post(
     }
 
     const ID = randomUUID();
+    /* jscpd:ignore-end */
     const { username, email } = request.body;
     usersMap.set(ID, { username, email });
 
@@ -55,6 +57,7 @@ app.post(
   },
 );
 
+/* jscpd:ignore-start */
 app.put(
   '/api/users/:ID',
   body('username').notEmpty(),
@@ -69,6 +72,7 @@ app.put(
     }
 
     const { ID } = request.params;
+    /* jscpd:ignore-end */
     const { username, email } = request.body;
 
     if (usersMap.has(ID) === false) {

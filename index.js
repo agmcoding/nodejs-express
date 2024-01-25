@@ -1,5 +1,6 @@
 const express = require('express');
 const { randomUUID } = require('crypto');
+const { body, validationResult } = require('express-validator');
 
 const app = express();
 app.use(express.json());
@@ -30,50 +31,55 @@ app.get('/api/users/:ID', (request, response) => {
   response.status(200).send(user);
 });
 
-app.post('/api/users/', (request, response) => {
-  const { username, email } = request.body;
+app.post(
+  '/api/users/',
+  body('username').notEmpty(),
+  body('email').notEmpty().isEmail(),
+  (request, response) => {
+    const errors = validationResult(request);
+    const thereAreErrors = !(errors.isEmpty());
 
-  if (username === undefined) {
-    response.status(400).send('Missing username');
-    return;
-  }
+    if (thereAreErrors) {
+      response.status(400).send(errors.array());
+      return;
+    }
 
-  if (email === undefined) {
-    response.status(400).send('Missing email');
-    return;
-  }
+    const ID = randomUUID();
+    const { username, email } = request.body;
+    usersMap.set(ID, { username, email });
 
-  const ID = randomUUID();
-  usersMap.set(ID, { username, email });
+    const createdUser = usersMap.get(ID);
+    const result = [ID, createdUser];
 
-  const createdUser = usersMap.get(ID);
-  const result = [ID, createdUser];
+    response.status(201).send(result);
+  },
+);
 
-  response.status(201).send(result);
-});
+app.put(
+  '/api/users/:ID',
+  body('username').notEmpty(),
+  body('email').notEmpty().isEmail(),
+  (request, response) => {
+    const errors = validationResult(request);
+    const thereAreErrors = !(errors.isEmpty());
 
-app.put('/api/users/:ID', (request, response) => {
-  const { ID } = request.params;
-  const { username, email } = request.body;
+    if (thereAreErrors) {
+      response.status(400).send(errors.array());
+      return;
+    }
 
-  if (username === undefined) {
-    response.status(400).send('Missing username');
-    return;
-  }
+    const { ID } = request.params;
+    const { username, email } = request.body;
 
-  if (email === undefined) {
-    response.status(400).send('Missing email');
-    return;
-  }
+    if (usersMap.has(ID) === false) {
+      response.status(404).send(`User not found with ID: ${ID}`);
+      return;
+    }
 
-  if (usersMap.has(ID) === false) {
-    response.status(404).send(`User not found with ID: ${ID}`);
-    return;
-  }
-
-  usersMap.set(ID, { username, email });
-  response.status(204).end();
-});
+    usersMap.set(ID, { username, email });
+    response.status(204).end();
+  },
+);
 
 app.delete('/api/users/:ID', (request, response) => {
   const { ID } = request.params;

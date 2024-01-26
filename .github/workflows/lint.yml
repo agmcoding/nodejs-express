@@ -13,5 +13,6 @@ jobs:
       - name: Super Linter
         uses: super-linter/super-linter@v5.7.2
         env:
+          LINTER_RULES_PATH: /
           JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.js
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

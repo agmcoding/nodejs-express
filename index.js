@@ -1,6 +1,6 @@
-const express = require('express');
-const { randomUUID } = require('crypto');
-const { body, validationResult } = require('express-validator');
+import express from 'express';
+import { randomUUID } from 'node:crypto';
+import { body, validationResult } from 'express-validator';
 
 const app = express();
 app.use(express.json());

@@ -11,6 +11,11 @@ usersMap.set(randomUUID(), { username: 'Bob', email: 'bob@example.com' });
 usersMap.set(randomUUID(), { username: 'Amy', email: 'amy@example.com' });
 usersMap.set(randomUUID(), { username: 'Duke', email: 'duke@example.com' });
 
+const userValidator = [
+  body('username').notEmpty(),
+  body('email').notEmpty().isEmail(),
+];
+
 app.get('/welcome/', (request, response) => {
   response.status(200).send('Welcome!');
 });
@@ -32,11 +37,7 @@ app.get('/api/users/:ID', (request, response) => {
 });
 
 /* jscpd:ignore-start */
-app.post(
-  '/api/users/',
-  body('username').notEmpty(),
-  body('email').notEmpty().isEmail(),
-  (request, response) => {
+app.post('/api/users/', userValidator, (request, response) => {
     const errors = validationResult(request);
     const thereAreErrors = !(errors.isEmpty());
 
@@ -54,15 +55,10 @@ app.post(
     const result = [ID, createdUser];
 
     response.status(201).send(result);
-  },
-);
+});
 
 /* jscpd:ignore-start */
-app.put(
-  '/api/users/:ID',
-  body('username').notEmpty(),
-  body('email').notEmpty().isEmail(),
-  (request, response) => {
+app.put('/api/users/:ID', userValidator, (request, response) => {
     const errors = validationResult(request);
     const thereAreErrors = !(errors.isEmpty());
 
@@ -82,8 +78,7 @@ app.put(
 
     usersMap.set(ID, { username, email });
     response.status(204).end();
-  },
-);
+});
 
 app.delete('/api/users/:ID', (request, response) => {
   const { ID } = request.params;

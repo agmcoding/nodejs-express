@@ -41,7 +41,7 @@ app.post(
     const thereAreErrors = !(errors.isEmpty());
 
     if (thereAreErrors) {
-      response.status(400).send(errors.array());
+      response.status(400).send({ errors: errors.array() });
       return;
     }
 
@@ -67,7 +67,7 @@ app.put(
     const thereAreErrors = !(errors.isEmpty());
 
     if (thereAreErrors) {
-      response.status(400).send(errors.array());
+      response.status(400).send({ errors: errors.array() });
       return;
     }
 

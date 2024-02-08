@@ -38,46 +38,46 @@ app.get('/api/users/:ID', (request, response) => {
 
 /* jscpd:ignore-start */
 app.post('/api/users/', userValidator, (request, response) => {
-    const errors = validationResult(request);
-    const thereAreErrors = !(errors.isEmpty());
+  const errors = validationResult(request);
+  const thereAreErrors = !(errors.isEmpty());
 
-    if (thereAreErrors) {
-      response.status(400).send({ errors: errors.array() });
-      return;
-    }
+  if (thereAreErrors) {
+    response.status(400).send({ errors: errors.array() });
+    return;
+  }
 
-    const ID = randomUUID();
-    /* jscpd:ignore-end */
-    const { username, email } = request.body;
-    usersMap.set(ID, { username, email });
+  const ID = randomUUID();
+  /* jscpd:ignore-end */
+  const { username, email } = request.body;
+  usersMap.set(ID, { username, email });
 
-    const createdUser = usersMap.get(ID);
-    const result = [ID, createdUser];
+  const createdUser = usersMap.get(ID);
+  const result = [ID, createdUser];
 
-    response.status(201).send(result);
+  response.status(201).send(result);
 });
 
 /* jscpd:ignore-start */
 app.put('/api/users/:ID', userValidator, (request, response) => {
-    const errors = validationResult(request);
-    const thereAreErrors = !(errors.isEmpty());
+  const errors = validationResult(request);
+  const thereAreErrors = !(errors.isEmpty());
 
-    if (thereAreErrors) {
-      response.status(400).send({ errors: errors.array() });
-      return;
-    }
+  if (thereAreErrors) {
+    response.status(400).send({ errors: errors.array() });
+    return;
+  }
 
-    const { ID } = request.params;
-    /* jscpd:ignore-end */
-    const { username, email } = request.body;
+  const { ID } = request.params;
+  /* jscpd:ignore-end */
+  const { username, email } = request.body;
 
-    if (usersMap.has(ID) === false) {
-      response.status(404).send(`User not found with ID: ${ID}`);
-      return;
-    }
+  if (usersMap.has(ID) === false) {
+    response.status(404).send(`User not found with ID: ${ID}`);
+    return;
+  }
 
-    usersMap.set(ID, { username, email });
-    response.status(204).end();
+  usersMap.set(ID, { username, email });
+  response.status(204).end();
 });
 
 app.delete('/api/users/:ID', (request, response) => {
